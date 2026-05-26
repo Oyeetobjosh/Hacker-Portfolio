@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tobjosh | Interactive Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#050505',
+                            neon: '#00ffcc',
+                            alert: '#ff0033',
+                            text: '#c9d1d9',
+                            dim: '#8b949e'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['"Fira Code"', '"Courier New"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050505; color: #c9d1d9; font-family: 'Courier New', Courier, monospace; }
+        
+        #cmd-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #c9d1d9;
+            outline: none;
+            font-family: inherit;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #1a2634; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00ffcc; }
+
+        a { color: #00ffcc; text-decoration: underline; }
+        a:hover { background-color: #00ffcc; color: #050505; text-decoration: none; }
+
+        /* CRT Scanline Effect */
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 50;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        /* Pwned Background Animation */
+        .pwned-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 8vw;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(255, 0, 51, 0.15);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            animation: pwned-pulse 4s ease-in-out infinite alternate;
+            user-select: none;
+        }
+
+        @keyframes pwned-pulse {
+            0% { opacity: 0.3; text-shadow: 0 0 10px rgba(255, 0, 51, 0.1); }
+            100% { opacity: 0.8; text-shadow: 0 0 30px rgba(255, 0, 51, 0.4); transform: translate(-50%, -50%) rotate(-15deg) scale(1.05); }
+        }
+    </style>
+</head>
+<body class="scanlines min-h-screen p-4 md:p-8 flex flex-col selection:bg-cyber-neon selection:text-black relative z-0">
+    <div class="pwned-bg">TOBJOSH PWNED YOU</div>
+    <div id="terminal-container" class="flex-1 overflow-y-auto pb-4 text-sm md:text-base relative z-10">
+        <div id="output" class="whitespace-pre-wrap leading-relaxed"></div>
+        <div id="input-line" class="flex items-center mt-2 hidden">
+            <span class="text-cyber-neon mr-2">root@tobjosh:~$</span>
+            <input type="text" id="cmd-input" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const input = document.getElementById('cmd-input');
+        const inputLine = document.getElementById('input-line');
+        const container = document.getElementById('terminal-container');
+        
+        let history = [];
+        let historyIndex = -1;
+
+        const files = {
+            'about.txt': `I'm tobjosh, the nemesis of security.\nOffensive Security Specialist focused on advanced penetration testing and threat surface analysis.\nI systematically breach web applications, APIs, and network protocols to expose hidden security flaws before they are leveraged in the wild.\nI'm the doom of Web Security 💀`,
+            'skills.txt': `[1] Reconnaissance & Attack Surface Mapping\n  - Nmap, Amass, Subfinder, Dirsearch, Gobuster\n\n[2] Traffic Interception & Behavioral Analysis\n  - Burp Suite, OWASP ZAP, Wireshark\n\n[3] Vulnerability Exploitation & Fuzzing\n  - SQLmap, Metasploit, Postman, Bruno\n\n[4] Automation, Scripting & Custom Engineering\n  - Python, Bash, Node.js, Foundry/Forge (Secret Weapon)`,
+            'projects.txt': `1. Smart Contract State Machine Rescue (SEV-0)\n   An empirical reproduction and rescue of a multi-tier crowdsale timeline collision.\n   [ <a href="case-study.html">View Audit Log</a> ]\n\n2. DeFi Protocol Vulnerability Scanner\n   A custom static and dynamic analysis tool built to automatically detect reentrancy, unhandled returns, etc.`,
+            'certificates.txt': `Certifications list:\n- TryHackMe: Jr Penetration Tester [ <a href="certs/THM-KIK0CVQZ16.pdf" target="_blank">View PDF</a> ]\n- TryHackMe: Web Fundamentals [ <a href="certs/THM-XVP67J6WW8.pdf" target="_blank">View PDF</a> ]`,
+            'contact.txt': `Email: oyeetobjosh@gmail.com\nDiscord: oyeetobjosh_95034\nGitHub: <a href="https://github.com/Oyeetobjosh" target="_blank">github.com/Oyeetobjosh</a>`
+        };
+
+        const commands = {
+            help: () => `Available commands:\n  help       - Show this message\n  whoami     - Display information about tobjosh\n  ls         - List available files\n  cat <file> - Read a specific file (e.g., cat about.txt)\n  clear      - Clear the terminal screen\n  sudo       - Execute a command as superuser`,
+            whoami: () => files['about.txt'],
+            ls: () => `<span class="text-cyber-neon">` + Object.keys(files).join('  ') + `</span>`,
+            cat: (args) => {
+                if (!args.length) return "cat: missing file operand";
+                const file = args[0];
+                return files[file] ? files[file] : `cat: ${file}: No such file or directory`;
+            },
+            clear: () => {
+                output.innerHTML = '';
+                return '';
+            },
+            sudo: () => `tobjosh is not in the sudoers file. This incident will be reported.`,
+        };
+
+        const processCommand = (cmdStr) => {
+            const parts = cmdStr.trim().split(/\s+/);
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+            if (cmd === '') return '';
+            
+            if (commands[cmd]) {
+                return commands[cmd](args);
+            }
+            return `bash: ${cmd}: command not found`;
+        };
+
+        const printLine = (text) => {
+            if (text !== '') {
+                const div = document.createElement('div');
+                div.innerHTML = text;
+                output.appendChild(div);
+            }
+            container.scrollTop = container.scrollHeight;
+        };
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmdVal = input.value;
+                printLine(`<span class="text-cyber-neon">root@tobjosh:~$</span> ${cmdVal}`);
+                
+                if (cmdVal.trim() !== '') {
+                    history.push(cmdVal);
+                    historyIndex = history.length;
+                }
+                
+                const response = processCommand(cmdVal);
+                printLine(response);
+                
+                input.value = '';
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    input.value = history[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < history.length - 1) {
+                    historyIndex++;
+                    input.value = history[historyIndex];
+                } else {
+                    historyIndex = history.length;
+                    input.value = '';
+                }
+            }
+        });
+
+        // Boot sequence
+        const bootMessages = [
+            "Initializing kernel...",
+            "Loading security modules [OK]",
+            "Mounting file systems [OK]",
+            "Starting network interface [OK]",
+            "Bypassing firewall [OK]",
+            "Accessing root mainframe...",
+            "<br>Welcome to tobjosh OS [Version 1.0.0]",
+            "(c) 2026 tobjosh. All rights reserved.<br>",
+            "<span class='text-cyber-neon'>ACCESS_GRANTED</span>",
+            "Type 'help' to see available commands."
+        ];
+
+        let bootIndex = 0;
+        const boot = setInterval(() => {
+            if (bootIndex < bootMessages.length) {
+                printLine(bootMessages[bootIndex]);
+                bootIndex++;
+            } else {
+                clearInterval(boot);
+                inputLine.classList.remove('hidden');
+                input.focus();
+            }
+        }, 300);
+
+        // Keep focus on input when clicking anywhere
+        document.addEventListener('click', () => {
+            const selection = window.getSelection();
+            if (selection.toString().length === 0) {
+                input.focus();
+            }
+        });
+    </script>
+</body>
+</html>

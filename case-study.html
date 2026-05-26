@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study: Smart Contract Rescue</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            black: '#0a0a0a',
+                            slate: '#0f172a',
+                            panel: '#1e293b',
+                            neon: '#00ffcc', // Emerald/Green accent
+                            alert: '#ff0033', // Crimson/Red accent
+                            text: '#e2e8f0',
+                            dim: '#94a3b8'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['"Fira Code"', '"Courier New"', 'monospace'],
+                        sans: ['"Inter"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        body { background-color: #0a0a0a; color: #e2e8f0; }
+        .glitch-text {
+            text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
+        }
+        .cyber-border {
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.05);
+        }
+        .cyber-border-alert {
+            border: 1px solid rgba(255, 0, 51, 0.3);
+            box-shadow: 0 0 10px rgba(255, 0, 51, 0.1);
+        }
+        /* Terminal Typing Effect */
+        .typing::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        .tab-btn {
+            border-bottom: 2px solid transparent;
+        }
+        .tab-btn.active {
+            border-bottom: 2px solid #00ffcc;
+            color: #00ffcc;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen p-4 md:p-8 selection:bg-cyber-neon selection:text-black">
+
+<div class="max-w-5xl mx-auto space-y-12">
+
+    <!-- Header Section -->
+    <header class="space-y-4 border-l-4 border-cyber-neon pl-6 py-2">
+        <div class="flex items-center space-x-2 text-cyber-neon font-mono text-sm mb-2">
+            <span class="animate-pulse">▶</span>
+            <span>SYSTEM_AUDIT_LOG // SEV-0</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white glitch-text">
+            Case Study: Breaking & Rescuing a <span class="text-cyber-neon">$929K</span> Smart Contract State Machine
+        </h1>
+        <p class="text-cyber-dim text-lg max-w-3xl">
+            A zero-knowledge post-mortem on a critical architectural flaw. Demonstrating the empirical reproduction of a multi-tier crowdsale timeline collision and the programmatic execution path used to surgically unlock stranded capital.
+        </p>
+    </header>
+
+    <!-- Toolstack Badges -->
+    <section class="flex flex-wrap gap-3 font-mono text-xs">
+        <span class="px-3 py-1 rounded bg-cyber-slate cyber-border text-cyber-neon">Solidity 0.7.6</span>
+        <span class="px-3 py-1 rounded bg-cyber-slate cyber-border text-cyber-neon">Foundry / Forge</span>
+        <span class="px-3 py-1 rounded bg-cyber-slate cyber-border text-cyber-neon">EVM Storage Manipulation</span>
+        <span class="px-3 py-1 rounded bg-cyber-slate cyber-border text-cyber-neon">Invariant Testing</span>
+    </section>
+
+    <!-- Two Column Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Left Column: Mission & Bug -->
+        <div class="space-y-8">
+            <!-- Mission Objective -->
+            <div class="bg-cyber-slate rounded-lg p-6 cyber-border">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-cyber-neon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    Mission Objective
+                </h2>
+                <p class="text-cyber-text leading-relaxed text-sm">
+                    A legacy Token Wizard-based system deployed on mainnet suffered a permanent state machine deadlock, trapping nearly $1 million in user funds. The core contracts were immutable. The objective: map the EVM state constraints locally via Foundry, identify an architectural bypass, and discover an explicit, programmatic rescue pathway without upgrading the logic.
+                </p>
+            </div>
+
+            <!-- The Discovery (The Bug) -->
+            <div class="bg-[#1a1114] rounded-lg p-6 cyber-border-alert relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-cyber-alert"></div>
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-cyber-alert" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    The Discovery: Chronological Deadlock
+                </h2>
+                <p class="text-cyber-text leading-relaxed mb-4 text-sm">
+                    The root cause was a multi-tier chronological loop deadlock within the <code class="text-cyber-alert bg-black px-1 rounded">getState()</code> view function. 
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-cyber-dim text-sm">
+                    <li>Sequential tiers are tightly coupled by state invariants.</li>
+                    <li>An administrative parameter update pushed Tier 1's <code class="text-white">endsAt</code> timestamp past Tier 2's <code class="text-white">startsAt</code>.</li>
+                    <li>This caused a temporal collision when iterating through <code class="text-white">joinedCrowdsales[]</code>.</li>
+                    <li><code class="text-cyber-alert">getState()</code> panicked/reverted, causing core functions like refunds and withdrawals to permanently fail.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Column: Terminal Trace -->
+        <div>
+            <div class="bg-black rounded-lg cyber-border overflow-hidden h-full flex flex-col font-mono text-sm min-h-[400px]">
+                <div class="bg-cyber-panel px-4 py-2 flex items-center justify-between border-b border-gray-800">
+                    <div class="flex space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <span class="text-cyber-dim text-xs">forge test -vvv --match-test testVaultRescue</span>
+                </div>
+                <div class="p-4 flex-grow overflow-y-auto whitespace-pre text-xs leading-relaxed" id="terminal-output">
+                    <!-- JS will populate this -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Code Display -->
+    <section class="bg-cyber-slate rounded-lg cyber-border overflow-hidden">
+        <div class="flex border-b border-gray-800 bg-cyber-panel">
+            <button class="tab-btn active px-6 py-3 font-mono text-sm text-cyber-neon transition-colors" data-target="strategy">RescuePricingStrategy.sol</button>
+            <button class="tab-btn px-6 py-3 font-mono text-sm text-cyber-dim hover:text-cyber-neon transition-colors" data-target="test">testVaultRescue()</button>
+        </div>
+        
+        <div class="p-0 overflow-x-auto">
+            <div id="strategy" class="code-tab block">
+<pre class="!m-0 !bg-transparent text-sm"><code class="language-solidity">/**
+ * @title RescuePricingStrategy
+ * @dev Malicious/Rescue implementation designed to bypass the 
+ *      multi-tier loop failure by forcing an instant cap max-out.
+ */
+pragma solidity 0.7.6;
+
+contract RescuePricingStrategy {
+    function isPricingStrategy() public pure returns (bool) {
+        return true;
+    }
+
+    function isSane(address) public pure returns (bool) {
+        return true;
+    }
+
+    function isPresalePurchase(address) public pure returns (bool) {
+        return false;
+    }
+
+    /**
+     * @dev Exploit logic: Returns an artificially inflated token 
+     *      amount for a tiny wei input. 1 wei = max uint256 tokens.
+     */
+    function calculatePrice(uint256 value, uint256, uint256, address, uint256) 
+        public 
+        pure 
+        returns (uint256) 
+    {
+        // For 1 wei, return the maximum possible uint256 value 
+        // to immediately trip isCrowdsaleFull() to true.
+        if (value > 0) {
+            return type(uint256).max;
+        }
+        return 0;
+    }
+}</code></pre>
+            </div>
+            
+            <div id="test" class="code-tab hidden">
+<pre class="!m-0 !bg-transparent text-sm"><code class="language-solidity">/**
+ * @dev Executes the recovery vector via state shift override.
+ */
+function testVaultRescue() public {
+    // 1. Deploy the custom rescue payload
+    RescuePricingStrategy rescueStrategy = new RescuePricingStrategy();
+    
+    // 2. Exploit ungated admin function to hot-swap strategy
+    vm.prank(owner);
+    tier1.setPricingStrategy(address(rescueStrategy));
+    
+    // 3. Trigger state shift condition with minimal capital
+    vm.deal(attacker, 1 ether);
+    vm.prank(attacker);
+    
+    // Sending 1 wei will trigger calculatePrice() -> returns max uint
+    // This forces tokensSold >= maximumSellableTokens
+    // which makes isCrowdsaleFull() = true.
+    (bool success, ) = address(tier1).call{value: 1}("");
+    require(success, "Injection failed");
+    
+    // 4. Assert State resolution bypassed chronological deadlock
+    uint256 resolvedState = uint256(tier1.getState());
+    
+    // State 5 corresponds to State.Success in the enum
+    assertEq(resolvedState, 5, "Rescue failed: State not shifted to Success");
+    
+    // 5. Execute Withdrawal (Vault Unlocked)
+    vm.prank(owner);
+    vault.withdrawContractFund();
+    
+    emit log_string("VAULT UNLOCKED: State shifted to Success fully!");
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-solidity.min.js"></script>
+<script>
+    // Tab Switching Logic
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.code-tab');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active classes
+            tabs.forEach(t => {
+                t.classList.remove('active', 'text-cyber-neon');
+                t.classList.add('text-cyber-dim');
+            });
+            contents.forEach(c => c.classList.add('hidden'));
+            contents.forEach(c => c.classList.remove('block'));
+
+            // Add active class to clicked
+            tab.classList.add('active', 'text-cyber-neon');
+            tab.classList.remove('text-cyber-dim');
+            
+            // Show content
+            const target = tab.getAttribute('data-target');
+            document.getElementById(target).classList.remove('hidden');
+            document.getElementById(target).classList.add('block');
+        });
+    });
+
+    // Terminal Typing Effect Logic
+    const terminalLines = [
+        "<span class='text-gray-400'>[Compiler] Compiling 24 files with 0.7.6</span>",
+        "<span class='text-gray-400'>[Compiler] Compilation successful</span>",
+        "",
+        "<span class='text-gray-400'>Running 1 test for test/CrowdsaleDeadlock.t.sol:CrowdsaleDeadlockTest</span>",
+        "<span class='text-green-500'>[PASS]</span> <span class='text-white font-bold'>testVaultRescue()</span> <span class='text-gray-500'>(gas: 125430)</span>",
+        "<span class='text-gray-400'>Traces:</span>",
+        "  <span class='text-gray-500'>[125430]</span> <span class='text-white'>CrowdsaleDeadlockTest::testVaultRescue()</span>",
+        "    ├─ [0] → new RescuePricingStrategy@0x...",
+        "    ├─ [2411] tier1::setPricingStrategy(RescuePricingStrategy: [0x...])",
+        "    ├─ [55112] tier1::fallback{value: 1}()",
+        "    │   └─ ← [Return] true",
+        "    ├─ [321] tier1::getState() [staticcall]",
+        "    │   └─ ← [Return] 5",
+        "    ├─ [15000] vault::withdrawContractFund()",
+        "    │   └─ ← [Return] true",
+        "    └─ emit log_string(val: \"<span class='text-cyber-neon font-bold text-shadow'>VAULT UNLOCKED: State shifted to Success fully!</span>\")",
+        "",
+        "<span class='text-cyber-neon'>Test result: ok. 1 passed; 0 failed; finished in 2.41ms</span>"
+    ];
+
+    const terminalContainer = document.getElementById('terminal-output');
+    let lineIndex = 0;
+
+    function typeLine() {
+        if (lineIndex < terminalLines.length) {
+            const p = document.createElement('div');
+            p.innerHTML = terminalLines[lineIndex] || '&nbsp;';
+            p.className = "text-gray-400 mb-1 font-mono";
+
+            terminalContainer.appendChild(p);
+            terminalContainer.scrollTop = terminalContainer.scrollHeight;
+            lineIndex++;
+            setTimeout(typeLine, Math.random() * 80 + 20); // Faster typing delay
+        } else {
+            // Add blinking cursor at the end
+            const cursor = document.createElement('div');
+            cursor.className = "mt-4 text-cyber-neon";
+            cursor.innerHTML = 'forge@local:~$ <span class="typing inline-block w-2 h-4 bg-cyber-neon align-middle"></span>';
+            terminalContainer.appendChild(cursor);
+        }
+    }
+
+    // Start typing after a short delay
+    setTimeout(typeLine, 800);
+</script>
+</body>
+</html>
