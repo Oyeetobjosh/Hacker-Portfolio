@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SignalDesk — a manual, permission-first outreach workspace for Tobjosh security sprints.">
+    <title>SignalDesk | Tobjosh Outreach Workspace</title>
+    <link rel="stylesheet" href="assets/outreach.css">
+</head>
+<body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <div class="app-shell">
+        <header class="topbar">
+            <a class="brand" href="index.html" aria-label="Back to Tobjosh portfolio">
+                <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span>
+                    <strong>SignalDesk</strong>
+                    <small>by tobjosh</small>
+                </span>
+            </a>
+
+            <div class="topbar-center" aria-label="Workspace status">
+                <span class="live-dot"></span>
+                <span>LOCAL WORKSPACE</span>
+                <span class="divider">/</span>
+                <span id="today-label">TODAY</span>
+            </div>
+
+            <div class="topbar-actions">
+                <button class="icon-button" id="export-button" type="button" title="Export lead data" aria-label="Export lead data">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 15v5h14v-5"/></svg>
+                </button>
+                <a class="portfolio-link" href="index.html">Portfolio <span>↗</span></a>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <aside class="left-rail">
+                <section class="goal-card panel">
+                    <div class="eyebrow-row">
+                        <span class="eyebrow">TODAY'S TARGET</span>
+                        <span class="goal-day">01</span>
+                    </div>
+                    <div class="goal-value"><span id="goal-naira">₦0</span><small> / ₦1M</small></div>
+                    <div class="goal-usd"><span id="goal-usd">$0</span> of $777</div>
+                    <div class="progress-track"><span id="goal-progress"></span></div>
+                    <div class="goal-stats">
+                        <div><strong id="sent-count">0</strong><span>sent</span></div>
+                        <div><strong id="reply-count">0</strong><span>replies</span></div>
+                        <div><strong id="proposal-count">0</strong><span>scopes</span></div>
+                    </div>
+                    <button class="primary-button full" id="log-win-button" type="button">+ Log a result</button>
+                </section>
+
+                <section class="timer-card panel">
+                    <div class="section-heading compact">
+                        <div>
+                            <span class="eyebrow">FOCUS RHYTHM</span>
+                            <h2>One lead at a time.</h2>
+                        </div>
+                        <span class="round-counter" id="round-counter">01 / 04</span>
+                    </div>
+                    <div class="timer-mode-row">
+                        <button class="mode-button active" data-mode="focus" type="button">Focus</button>
+                        <button class="mode-button" data-mode="break" type="button">Break</button>
+                    </div>
+                    <div class="timer-display" id="timer-display">25:00</div>
+                    <div class="timer-actions">
+                        <button class="timer-start" id="timer-start" type="button"><span>▶</span> Start session</button>
+                        <button class="timer-reset" id="timer-reset" type="button" aria-label="Reset timer" title="Reset timer">↺</button>
+                    </div>
+                    <p class="timer-note">Work deliberately. Take the break. No background sending.</p>
+                </section>
+
+                <section class="guardrail-card panel">
+                    <div class="guardrail-icon">✓</div>
+                    <div>
+                        <span class="eyebrow">PERMISSION-FIRST</span>
+                        <h3>Built to protect your name.</h3>
+                        <ul>
+                            <li>Research public business context</li>
+                            <li>Personalize every message</li>
+                            <li>Send manually from the platform</li>
+                            <li>Test only with written authorization</li>
+                        </ul>
+                    </div>
+                </section>
+            </aside>
+
+            <section class="main-column">
+                <section class="hero-row">
+                    <div>
+                        <p class="kicker"><span></span> AUTHORIZED SECURITY OUTREACH</p>
+                        <h1>Find the signal.<br><em>Start the right conversation.</em></h1>
+                        <p class="hero-copy">A focused desk for researching new businesses, writing relevant outreach, and tracking every real conversation — without bots, scraping, or surprise scans.</p>
+                    </div>
+                    <div class="manual-badge">
+                        <span class="manual-badge-icon">⌁</span>
+                        <span><small>DELIVERY MODE</small><strong>Human-reviewed</strong></span>
+                    </div>
+                </section>
+
+                <section class="search-card panel">
+                    <div class="section-heading">
+                        <div>
+                            <span class="step-number">01</span>
+                            <div>
+                                <span class="eyebrow">DISCOVERY</span>
+                                <h2>Search for a launch signal</h2>
+                            </div>
+                        </div>
+                        <p>Use platform search yourself. Save only qualified businesses.</p>
+                    </div>
+                    <div class="search-controls">
+                        <label class="search-input-wrap">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+                            <span class="sr-only">Search phrase</span>
+                            <input id="discovery-query" type="search" value="we just launched fintech Nigeria" autocomplete="off">
+                        </label>
+                        <button class="channel-button instagram" data-search-channel="instagram" type="button"><span>◎</span> Instagram</button>
+                        <button class="channel-button linkedin" data-search-channel="linkedin" type="button"><span>in</span> LinkedIn</button>
+                        <button class="channel-button web" data-search-channel="web" type="button"><span>↗</span> Web</button>
+                    </div>
+                    <div class="suggestion-row">
+                        <span>TRY</span>
+                        <button type="button" data-query='"we just launched" SaaS Nigeria'>“we just launched” SaaS</button>
+                        <button type="button" data-query='"now live" fintech startup'>“now live” fintech</button>
+                        <button type="button" data-query='"introducing" ecommerce Nigeria'>“introducing” ecommerce</button>
+                        <button type="button" data-query='"public beta" app Africa'>“public beta” app</button>
+                    </div>
+                </section>
+
+                <div class="desk-grid">
+                    <section class="lead-card panel">
+                        <div class="section-heading">
+                            <div>
+                                <span class="step-number">02</span>
+                                <div>
+                                    <span class="eyebrow">QUALIFY</span>
+                                    <h2>Capture the reason to reach out</h2>
+                                </div>
+                            </div>
+                            <div class="fit-score" title="Lead fit score"><span id="fit-score">0</span>/5 fit</div>
+                        </div>
+
+                        <form id="lead-form">
+                            <div class="field-grid two">
+                                <label class="field">
+                                    <span>Company *</span>
+                                    <input id="company" name="company" required placeholder="e.g. KoraPay" autocomplete="organization">
+                                </label>
+                                <label class="field">
+                                    <span>Contact name</span>
+                                    <input id="contact" name="contact" placeholder="e.g. Amara" autocomplete="name">
+                                </label>
+                            </div>
+                            <div class="field-grid two">
+                                <label class="field">
+                                    <span>Industry</span>
+                                    <select id="industry" name="industry">
+                                        <option value="">Choose a category</option>
+                                        <option>SaaS</option>
+                                        <option>Fintech</option>
+                                        <option>E-commerce</option>
+                                        <option>Healthtech</option>
+                                        <option>Web3</option>
+                                        <option>Marketplace</option>
+                                        <option>Agency</option>
+                                        <option>Other</option>
+                                    </select>
+                                </label>
+                                <label class="field">
+                                    <span>Launch date / estimate</span>
+                                    <input id="launch-date" name="launchDate" type="date">
+                                </label>
+                            </div>
+                            <div class="field-grid two">
+                                <label class="field">
+                                    <span>Channel</span>
+                                    <select id="channel" name="channel">
+                                        <option>Instagram</option>
+                                        <option>LinkedIn</option>
+                                        <option>Email</option>
+                                    </select>
+                                </label>
+                                <label class="field">
+                                    <span>Profile URL</span>
+                                    <input id="profile-url" name="profileUrl" type="url" placeholder="https://instagram.com/...">
+                                </label>
+                            </div>
+                            <label class="field">
+                                <span>Website</span>
+                                <input id="website" name="website" type="url" placeholder="https://company.com">
+                            </label>
+                            <label class="field">
+                                <span>Why now? *</span>
+                                <input id="signal" name="signal" required placeholder="e.g. Announced public launch 12 days ago">
+                                <small>The public business signal that makes this relevant now.</small>
+                            </label>
+                            <label class="field">
+                                <span>Specific observation *</span>
+                                <textarea id="observation" name="observation" required rows="3" placeholder="e.g. Their new product accepts payments and supports customer accounts."></textarea>
+                                <small>Use a genuine, non-alarmist observation. Do not claim a vulnerability you have not been authorized to test.</small>
+                            </label>
+                            <div class="qualification-checks">
+                                <label><input id="has-live-product" type="checkbox"><span>Live product</span></label>
+                                <label><input id="has-sensitive-flow" type="checkbox"><span>Auth / API / payments</span></label>
+                                <label><input id="is-recent" type="checkbox"><span>Launched ≤ 6 months</span></label>
+                            </div>
+                            <button class="secondary-button full" type="submit">Save lead to queue <span>→</span></button>
+                        </form>
+                    </section>
+
+                    <section class="draft-card panel">
+                        <div class="section-heading">
+                            <div>
+                                <span class="step-number">03</span>
+                                <div>
+                                    <span class="eyebrow">WRITE</span>
+                                    <h2>Make it useful, not scary</h2>
+                                </div>
+                            </div>
+                            <span class="saved-state" id="draft-state">DRAFT</span>
+                        </div>
+
+                        <div class="template-tabs" role="tablist" aria-label="Message template">
+                            <button class="template-tab active" data-template="initial" type="button">First note</button>
+                            <button class="template-tab" data-template="linkedin" type="button">LinkedIn</button>
+                            <button class="template-tab" data-template="followup" type="button">Follow-up</button>
+                        </div>
+
+                        <div class="message-paper">
+                            <div class="message-meta">
+                                <span id="message-channel">INSTAGRAM DM</span>
+                                <span id="char-count">0 characters</span>
+                            </div>
+                            <textarea id="message-draft" aria-label="Editable message draft" spellcheck="true"></textarea>
+                            <div class="message-principles">
+                                <span><i>✓</i> Specific</span>
+                                <span><i>✓</i> Permission-first</span>
+                                <span><i>✓</i> Clear price</span>
+                            </div>
+                        </div>
+
+                        <div class="draft-actions">
+                            <button class="primary-button" id="copy-draft" type="button">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+                                Copy draft
+                            </button>
+                            <button class="secondary-button" id="open-profile" type="button">Open profile ↗</button>
+                        </div>
+                        <button class="sent-button" id="mark-sent" type="button">I sent this manually <span>✓</span></button>
+
+                        <div class="tone-note">
+                            <strong>Why not “I can hack you”?</strong>
+                            <p>It reads as a threat and asks the prospect to trust an unverified claim. Lead with a relevant business signal, a defined authorized scope, and an easy next step.</p>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="queue-card panel">
+                    <div class="section-heading queue-heading">
+                        <div>
+                            <span class="step-number">04</span>
+                            <div>
+                                <span class="eyebrow">FOLLOW THROUGH</span>
+                                <h2>Today's lead queue</h2>
+                            </div>
+                        </div>
+                        <div class="queue-actions">
+                            <label class="mini-search">
+                                <span class="sr-only">Filter leads</span>
+                                <input id="lead-filter" type="search" placeholder="Filter leads...">
+                            </label>
+                            <button class="text-button" id="clear-data" type="button">Clear all</button>
+                        </div>
+                    </div>
+                    <div class="queue-table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Company</th><th>Signal</th><th>Channel</th><th>Status</th><th>Next action</th><th></th></tr>
+                            </thead>
+                            <tbody id="lead-list"></tbody>
+                        </table>
+                        <div class="empty-state" id="empty-state">
+                            <span class="empty-icon">⌁</span>
+                            <h3>Your queue is clear.</h3>
+                            <p>Research one recently launched business, record a real signal, and save it here.</p>
+                            <button type="button" id="load-example">Load a private example</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="proof-strip">
+                    <div>
+                        <span class="eyebrow">BE READY WHEN THEY SAY YES</span>
+                        <h2>Sell a defined sprint, not a vague “hack.”</h2>
+                    </div>
+                    <div class="proof-items">
+                        <a href="case-study.html">
+                            <span>01</span><div><small>PROOF</small><strong>Case study</strong></div><b>↗</b>
+                        </a>
+                        <button id="copy-scope" type="button">
+                            <span>02</span><div><small>DELIVERABLE</small><strong>Copy sprint scope</strong></div><b>+</b>
+                        </button>
+                        <a href="certs/Oluwatobiloba_Oyelowo_Security_Resume_v2.pdf" target="_blank" rel="noopener">
+                            <span>03</span><div><small>CREDENTIAL</small><strong>Security résumé</strong></div><b>↗</b>
+                        </a>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal-backdrop" id="result-modal" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="result-title">
+            <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+            <span class="eyebrow">UPDATE THE SCOREBOARD</span>
+            <h2 id="result-title">Log a real result</h2>
+            <p>Track outcomes, not activity theatre. Values stay in this browser.</p>
+            <form id="result-form">
+                <label class="field"><span>Result</span>
+                    <select id="result-type">
+                        <option value="reply">Reply received</option>
+                        <option value="proposal">Scope requested / sent</option>
+                        <option value="win">Engagement signed</option>
+                    </select>
+                </label>
+                <label class="field amount-field hidden" id="amount-field"><span>Signed value (USD)</span><input id="result-amount" type="number" min="0" step="1" value="777"></label>
+                <button class="primary-button full" type="submit">Save result</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"><span>✓</span><p>Done</p></div>
+
+    <script src="assets/outreach.js"></script>
+</body>
+</html>
