@@ -114,13 +114,17 @@
         };
 
         const commands = {
-            help: () => `Available commands:\n  help       - Show this message\n  whoami     - Display information about tobjosh\n  ls         - List available files\n  cat <file> - Read a specific file (e.g., cat about.txt)\n  clear      - Clear the terminal screen\n  sudo       - Execute a command as superuser`,
+            help: () => `Available commands:\n  help       - Show this message\n  whoami     - Display information about tobjosh\n  ls         - List available files\n  cat <file> - Read a specific file (e.g., cat about.txt)\n  outreach   - Open the permission-first outreach workspace\n  clear      - Clear the terminal screen\n  sudo       - Execute a command as superuser`,
             whoami: () => files['about.txt'],
             ls: () => `<span class="text-cyber-neon">` + Object.keys(files).join('  ') + `</span>`,
             cat: (args) => {
                 if (!args.length) return "cat: missing file operand";
                 const file = args[0];
                 return files[file] ? files[file] : `cat: ${file}: No such file or directory`;
+            },
+            outreach: () => {
+                window.location.href = 'outreach.html';
+                return `<span class="text-cyber-neon">Opening SignalDesk...</span>`;
             },
             clear: () => {
                 output.innerHTML = '';
@@ -194,7 +198,8 @@
             "<br>Welcome to tobjosh OS [Version 1.0.0]",
             "(c) 2026 tobjosh. All rights reserved.<br>",
             "<span class='text-cyber-neon'>ACCESS_GRANTED</span>",
-            "Type 'help' to see available commands."
+            "Type 'help' to see available commands.",
+            "New: type <span class='text-cyber-neon'>'outreach'</span> to open SignalDesk."
         ];
 
         let bootIndex = 0;
